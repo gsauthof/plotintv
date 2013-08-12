@@ -130,18 +130,19 @@ program_version = "0.5"
 if __name__ == '__main__':
   import optparse
   opts = optparse.OptionParser(
-    usage='Usage: %prog  (-v)? (-x|input_file) (-o graph.ext)'
-      '\n\nTurns list of time intervals into plots.\n\n'
-      'Input file format:\n'
+    usage =
+      'Usage: %prog  (-v)? (-x|input_file) (-o graph.ext)'
+      '\n\nInput file format:\n'
       '#cat,sub,from,to,color\n'
-      '...,...,YYYY-MM-DD_HH24:MI:SS,...,(red|green|...)\n'
-      '\n\n2013-08-11, Georg Sauthoff <mail@georg.so>\n'
+      '...,...,YYYY-MM-DD_HH24:MI:SS,...,(red|green|...)'
     ,
-    version=program_version,
-    conflict_handler='resolve',
+    version = program_version,
+    description =
+      'Turns list of time intervals into plots.',
+    epilog =
+      '2013-08-11, Georg Sauthoff <mail@georg.so>'
+    # by default: add_help_option = True
   )
-  opts.add_option('-h', '--help',
-    action='help', help='this screen')
   opts.add_option('-v', '--verbose',
     action='callback', callback=enable_debug_output)
   opts.add_option('-x', '--example',
@@ -156,8 +157,15 @@ if __name__ == '__main__':
       default='time')
   opts.add_option('--ylabel', dest='ylabel',
       default=None)
+  opts.add_option('-s', dest='subcats', action='append',
+      help = 'for display in the legend - supply multiple times'
+      )
+  opts.add_option('-c', dest='colors', action='append',
+      help = 'for display in the legend - supply multiple times')
 
   (options, args) = opts.parse_args()
+
+  log.debug('%s' % options.subcats)
 
   if options.example:
     main(file1)
