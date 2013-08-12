@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# 2013-08-11, Georg Sauthoff <mail@georg.so>
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -95,6 +97,13 @@ def plot_arr(arr):
   plt.title(options.title)
   plt.yticks(np.arange(len(cats)), cats)
   plt.ylim(-0.5, len(cats)+0.5)
+
+  line = plt.Line2D((0,1), (1,1), color='r', lw=1)
+  plt.legend([line], ['Red'], loc=options.legend_pos)
+
+  plt.xlabel(options.xlabel)
+  if options.ylabel is not None:
+    plt.ylabel(options.ylabel)
   
   plot_intv(arr, pos, spos)
 
@@ -141,6 +150,12 @@ if __name__ == '__main__':
   opts.add_option('--title', dest='title',
       default='date time intervals')
   opts.add_option('--dpi', type='int', dest='dpi') #, default=72)
+  opts.add_option('--legend-pos', dest='legend_pos',
+      default='upper right')
+  opts.add_option('--xlabel', dest='xlabel',
+      default='time')
+  opts.add_option('--ylabel', dest='ylabel',
+      default=None)
 
   (options, args) = opts.parse_args()
 
