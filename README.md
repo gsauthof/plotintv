@@ -57,6 +57,10 @@ categories.
 
 See the output of `--help`.
 
+## License
+
+[GPLv3+][gpl]
+
 [1]: http://matplotlib.org/
 [2]: http://en.wikipedia.org/wiki/Python_(programming_language)
-
+[gpl]:   http://www.gnu.org/licenses/gpl.html
