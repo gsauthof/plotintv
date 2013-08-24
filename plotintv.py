@@ -27,12 +27,12 @@ log.addHandler(handler)
 
 file1 = StringIO(
     "#cat,sub,from,to,color\n"
-    "foo,x,2012-01-01_00:00:00,2012-03-31_23:23:59,red\n"
-    "foo,x,2012-04-01_00:00:00,2012-12-12_23:23:59,red\n"
-    "foo,y,2012-02-01_00:00:00,2012-04-30_23:23:59,green\n"
-    "foo,y,2013-02-01_00:00:00,2016-04-30_23:23:59,green\n"
-    "bar,x,2012-01-01_00:00:00,2013-03-31_23:23:59,red\n"
-    "bar,y,2012-02-01_00:00:00,2013-04-30_23:23:59,green\n"
+    "foo,x,2012-01-01_00:00:00,2012-03-31_23:23:59,red,\n"
+    "foo,x,2012-04-01_00:00:00,2012-12-12_23:23:59,red,\n"
+    "foo,y,2012-02-01_00:00:00,2012-04-30_23:23:59,green,\n"
+    "foo,y,2013-02-01_00:00:00,2016-04-30_23:23:59,green,\n"
+    "bar,x,2012-01-01_00:00:00,2013-03-31_23:23:59,red,\n"
+    "bar,y,2012-02-01_00:00:00,2013-04-30_23:23:59,green,\n"
     )
 
 def str2dt(s):
@@ -41,7 +41,7 @@ def str2dt(s):
 
 def read_data(file1):
   arr = np.genfromtxt(file1, delimiter=',', autostrip=True,
-    dtype=('|S20','|S20', dt.datetime, dt.datetime,'|S20'),
+    dtype=('|S20','|S20', dt.datetime, dt.datetime,'|S20','|S20'),
     converters={2:str2dt, 3:str2dt}
     )
   return arr
@@ -76,12 +76,22 @@ def plot_intv(arr, pos, spos):
     d1 = i[2]
     d2 = i[3]
     col = i[4]
+    info = i[5]
     y = pos[cat] + spos[cat, sub]
     #plt.scatter(np.array([d1, d2]), np.array([y,y]), s=50, c=col, lw=2, edgecolor=col, marker='|')
     plt.scatter(d1, y, s=50, c=col, lw=1, edgecolor=col, marker= 6) #'<' )
     plt.scatter(d2, y, s=50, c=col, lw=1, edgecolor=col, marker= 7) #'>')
     plt.hlines(y, d1, d2, colors=col)
+    if info != '':
+      plt.annotate(info, xy=(d1+dt.timedelta(days=10), y+0.02), fontsize=8)
 
+
+def plot_legend():
+  lines = []
+  for color in options.colors:
+    line = plt.Line2D((0,1), (1,1), color=color, lw=1)
+    lines.append(line)
+  plt.legend(lines, options.subcats, loc=options.legend_pos)
 
 def plot_arr(arr):
   cats, pos, spos = extract_ticks(arr)
@@ -98,8 +108,9 @@ def plot_arr(arr):
   plt.yticks(np.arange(len(cats)), cats)
   plt.ylim(-0.5, len(cats)+0.5)
 
-  line = plt.Line2D((0,1), (1,1), color='r', lw=1)
-  plt.legend([line], ['Red'], loc=options.legend_pos)
+#  line = plt.Line2D((0,1), (1,1), color='r', lw=1)
+#  plt.legend([line], ['Red'], loc=options.legend_pos)
+  plot_legend()
 
   plt.xlabel(options.xlabel)
   if options.ylabel is not None:
@@ -166,6 +177,7 @@ if __name__ == '__main__':
   (options, args) = opts.parse_args()
 
   log.debug('%s' % options.subcats)
+  log.debug('%s' % options.colors)
 
   if options.example:
     main(file1)
